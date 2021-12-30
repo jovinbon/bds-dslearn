@@ -40,6 +40,8 @@ public class UserService implements UserDetailsService{
 	private UserRepository repository;
 	@Autowired
 	private RoleRepository roleRepository;
+	@Autowired
+	private AuthService authService;
 
 	public Page<UserDTO> findAllPaged(Pageable pageable) {
 		Page<User> list = repository.findAll(pageable);
@@ -48,6 +50,7 @@ public class UserService implements UserDetailsService{
 	
 	@Transactional(readOnly = true)
 	public UserDTO findById(Long id) {
+		authService.validSelfOrAdmin(id);
 		Optional<User> obj = repository.findById(id);
 		User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entidade não existe."));
 		return new UserDTO(entity);
