@@ -40,59 +40,12 @@ public class UserService implements UserDetailsService{
 	private UserRepository repository;
 	@Autowired
 	private RoleRepository roleRepository;
-	
-	/* --lista normal do repository--
-	
-	@Transactional(readOnly = true)
-	public List<User> findAll(){
-		return repository.findAll();
-	}
-	
 
-	  --adicionando uma category numa lista DTO
-	   
-	@Transactional(readOnly = true)
-	public List<UserDTO> findAll(){
-		List<User> list = repository.findAll();
-		
-		List<UserDTO> listDto = new ArrayList<>();
-		for (User cat : list) {
-			listDto.add(new UserDTO(cat));
-		}
-		
-		return listDto;
-	}*/
-	
-	
-	/* --------lista sem paginação--------
-	@Transactional(readOnly = true)
-	public List<UserDTO> findAll(){
-		List<User> list = repository.findAll();
-		return list.stream().map(x -> new UserDTO(x)).collect(Collectors.toList());
-	}*/
-	
-	// --------lista com paginação com PageRequest--------
-	/*public Page<UserDTO> findAllPaged(PageRequest pageResquest) {
-		Page<User> list = repository.findAll(pageResquest);
-		return list.map(x -> new UserDTO(x));
-	}*/
-	
-	// --------lista com paginação com Pageable--------
 	public Page<UserDTO> findAllPaged(Pageable pageable) {
 		Page<User> list = repository.findAll(pageable);
 		return list.map(x -> new UserDTO(x));
 	}
 	
-
-	/* --------sem categorias--------------
-	@Transactional(readOnly = true)
-	public UserDTO findById(Long id) {
-		Optional<User> obj = repository.findById(id);
-		User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entidade não existe."));
-		return new UserDTO(entity);
-	}*/
-	
-	// --------com categorias--------------
 	@Transactional(readOnly = true)
 	public UserDTO findById(Long id) {
 		Optional<User> obj = repository.findById(id);
@@ -147,13 +100,15 @@ public class UserService implements UserDetailsService{
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = repository.findByEmail(username);
+       
+		User user = repository.findByEmail(username);
         if (user == null) {
         	logger.error("User not found: " + username);
         	throw new UsernameNotFoundException("Email not found!");
         }
         logger.info("User found: " + username);
         return user;
+        
 	}
 
 }
