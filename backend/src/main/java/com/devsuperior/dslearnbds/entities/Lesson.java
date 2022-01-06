@@ -52,7 +52,6 @@ public abstract class Lesson implements Serializable {
 	}
 
 	public Lesson(Long id, String title, Integer position, Section section) {
-		super();
 		this.id = id;
 		this.title = title;
 		this.position = position;
